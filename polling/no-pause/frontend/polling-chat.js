@@ -42,7 +42,6 @@ async function getNewMsgs() {
   }
   allChat = json.msg;
   render();
-  setTimeout(getNewMsgs, INTERVAL);
 }
 
 function render() {
@@ -56,4 +55,13 @@ function render() {
 const template = (user, msg) =>
   `<li class="collection-item"><span class="badge">${user}</span>${msg}</li>`;
 
-getNewMsgs();
+let timeToMakeNextRequest = 0;
+async function rafTimer(time){
+  if(timeToMakeNextRequest <=time){
+    await getNewMsgs();
+    timeToMakeNextRequest = time + INTERVAL;
+  }
+  requestAnimationFrame(rafTimer)
+}
+
+requestAnimationFrame(rafTimer);
